@@ -1,9 +1,10 @@
+//Spaceship model
 package spaceShot;
 
 import java.awt.*;
 import javax.swing.*;
 
-public class SpaceShip extends JComponent {
+public class SpaceShip extends Sprite {
 	final static int LEFT = 0;
 	final static int RIGHT = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 	final static int TOP = 0;
@@ -15,16 +16,17 @@ public class SpaceShip extends JComponent {
 	Polygon ship = new Polygon(x,y,x.length);
 	
 	
-	public SpaceShip(){
-		setBounds(x[0], y[1], 50, 50);
+	public SpaceShip(int x, int y){
+		super (x,y); //Passes the arguments to sprite. Now we have met our extend requirements and have a proper sprite
+		//setPoly();
 	}
 	
 	
 	public void paintComponent(Graphics g){
-        super.paintComponent(g);
+       // super.paintComponent(g);
         g.setColor(Color.CYAN);
         g.fillPolygon(ship);
-		setBounds(x[0], y[1], 50, 50);
+	//	setBounds(x[0], y[1], 50, 50);
 	}
 	
 	public int[] updatePosition(int deltaX, int deltaY){
@@ -39,7 +41,7 @@ public class SpaceShip extends JComponent {
 			y[2] = y[2]+deltaY;
 			
 			int[] position = {x[1], y[1]/2};
-			setBounds(x[0], y[1], 50, 50);
+		//	setBounds(x[0], y[1], 50, 50);
 			ship = new Polygon(x,y,x.length); // recreates the polygon in a new space
 			return position;
 		}

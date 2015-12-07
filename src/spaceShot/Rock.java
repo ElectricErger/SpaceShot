@@ -1,3 +1,4 @@
+//Astroid model
 package spaceShot;
 
 import java.awt.*;

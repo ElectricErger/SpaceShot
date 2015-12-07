@@ -2,6 +2,7 @@
 package spaceShot;
 
 import java.awt.*;
+
 import javax.swing.*;
 
 public class SpaceShip{ //In the future extend from Sprite
@@ -68,5 +69,10 @@ public class SpaceShip{ //In the future extend from Sprite
 			}
 		}
 		return false; //it's not okay
+	}
+	
+
+	public Rectangle getBox(){
+		return new Rectangle(position[0]-25, position[1]-25, 50, 50);
 	}
 }

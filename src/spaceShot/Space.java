@@ -2,6 +2,8 @@
 package spaceShot;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Polygon;
 import java.awt.Toolkit;
@@ -24,10 +26,15 @@ public class Space extends JPanel implements ActionListener{
 	Random ran = new Random();
 	Logo logo;
 	SpaceShip ship;
-	int sensitive = 50;
-	ArrayList bullets = new ArrayList();
-	ArrayList stars = new ArrayList();
+	int sensitive = 10;
+	ArrayList<Bullet> bullets = new ArrayList();
+	ArrayList<Star> stars = new ArrayList();
+	ArrayList<Rock> rocks = new ArrayList();
 	Timer time = new Timer(50, this); //Requires implementing actionListener ...not sure why. Read up on it
+	Timer ast = new Timer(100, this);
+	boolean title = true;
+	boolean gameOver = false;
+	int score = 0;
 	
 	Space(){
 		ship = new SpaceShip(RIGHT/2, BOTTOM-50, Color.CYAN);
@@ -36,6 +43,7 @@ public class Space extends JPanel implements ActionListener{
 		listeners();
 		generateStars();
 		time.start();
+		(new astr()).start();
 	}
 	
 	//PAINTING PROTOCOL
@@ -43,12 +51,20 @@ public class Space extends JPanel implements ActionListener{
 		super.paintComponent(g);
 
 		stars(g);
-		
-		g.setColor(ship.getColor());
-		g.fillPolygon(ship.getImage());
-		
-		g.drawImage(logo.getImage(), (RIGHT-logo.getImage().getWidth(null))/2, (BOTTOM-logo.getImage().getHeight(null))/4, null);
+		ship(g);
+		rocks(g);
 		bullets(g);
+		
+		if (title){
+			g.drawImage(logo.getImage(), (RIGHT-logo.getImage().getWidth(null))/2, (BOTTOM-logo.getImage().getHeight(null))/4, null);
+			//Press enter to start
+			g.setFont(new Font("MONOSPACED", Font.PLAIN, 40));
+			String s = "Press Enter To Start";
+			g.drawString(s, (RIGHT-g.getFontMetrics().stringWidth(s))/2, (BOTTOM)*3/4);
+		}
+		if(gameOver){
+			g.drawString("GAME OVER", 100, 100);
+		}
 	}
 
 	private void generateStars(){
@@ -59,21 +75,29 @@ public class Space extends JPanel implements ActionListener{
 		}
 	}
 	
-	//Make stars -- These should be objects in the future because they will update
+	//Print the things to screen
+	private void ship(Graphics g){
+		g.setColor(ship.getColor());
+		g.fillPolygon(ship.getImage());
+	}
 	private void stars(Graphics g){
 		g.setColor(Color.WHITE);
-		for(int i = 0; i<stars.size(); i++){
-			Star temp = (Star) stars.get(i);
-			int[] dim = temp.getStar();
+		for(Star s : stars){
+			int[] dim = s.getStar();
 			g.fillOval(dim[0], dim[1], dim[2], dim[2]);
 		}
 	}
 	private void bullets(Graphics g){
 		g.setColor(Color.YELLOW);
-		for(int i = 0; i<bullets.size(); i++){
-			Bullet temp = (Bullet) bullets.get(i);
-			int[] loc = temp.getBullet();
+		for(Bullet b : bullets){
+			int[] loc = b.getBullet();
 			g.fillRect(loc[0], loc[1], 5, 15);
+		}
+	}
+	private void rocks(Graphics g){
+		g.setColor(Color.GRAY);
+		for(Rock r : rocks){
+			g.fillPolygon(r.getImage());
 		}
 	}
 	
@@ -85,6 +109,7 @@ public class Space extends JPanel implements ActionListener{
 		this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "Move Left");
 		this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "Move Right");
 		this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "Fire");
+		this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Start");
 		
 		this.getActionMap().put("Move Up", new AbstractAction(){
 			public void actionPerformed(ActionEvent e){
@@ -122,15 +147,36 @@ public class Space extends JPanel implements ActionListener{
 			}
 		}
 		);
+		this.getActionMap().put("Start",  new AbstractAction(){
+			public void actionPerformed(ActionEvent e){
+				title = false;
+			}
+		});
 		
 	}
 	
+
+	
+	//Updater
 	public void actionPerformed(ActionEvent e){
+		bulletUpdater();
+		asteroidUpdater();
+		starUpdater();
+		collisions();
+		repaint();
+	}
+	
+	private void bulletUpdater(){
 		for(int i = 0; i<bullets.size(); i++){
 			Bullet bullet = (Bullet) bullets.get(i);
 			bullet.updatePosition(0, -15);
-			System.out.println("TEST");
+			
+			if(bullet.getBullet()[1]<0){
+				bullets.remove(i);
+			}
 		}
+	}
+	private void starUpdater(){
 		for(int i = 0; i<stars.size(); i++){
 			Star star = (Star) stars.get(i);
 			star.updatePosition(0, 5);
@@ -139,6 +185,48 @@ public class Space extends JPanel implements ActionListener{
 				star.reset();
 			}
 		}
-		repaint();
+	}
+	private void asteroidUpdater(){
+		for(int i = 0; i<rocks.size(); i++){
+			Rock rock = rocks.get(i);
+			rock.updatePosition(0, 10);
+			
+			if(rock.getRock()[1]>BOTTOM){
+				rocks.remove(i);
+			}
+		}
+	}
+	private void collisions(){
+		//Collisions between asteroids and bullets
+		for(int r = 0; r<rocks.size(); r++){
+			Rock rockCol = rocks.get(r);
+			for(int b = 0; b<bullets.size(); b++){ //We did it
+				if(rockCol.getBox().intersects(bullets.get(b).getBox())){
+					rocks.remove(r);
+					bullets.remove(b);
+					score++;
+				}
+			}
+			if(rockCol.getBox().intersects(ship.getBox())){ //You lose
+				gameOver = true;
+				bullets = new ArrayList();
+				ship = new SpaceShip(RIGHT/2, BOTTOM-50, Color.CYAN);
+				rocks = new ArrayList();
+			}
+		}
+	}
+
+	
+	//New thread for making astroids
+	class astr extends Thread{
+		public void run(){
+			while (true){
+				if(rocks.size()<10 && !title && !gameOver){
+					rocks.add(new Rock(ran.nextInt(RIGHT), -20));
+				}
+				try {Thread.sleep(ran.nextInt(10)*100);}
+				catch (InterruptedException e) {}
+			}
+		}
 	}
 }

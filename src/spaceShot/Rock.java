@@ -4,55 +4,47 @@ package spaceShot;
 import java.awt.*;
 import javax.swing.*;
 
-public class Rock extends JComponent {
+public class Rock {
 	final static int LEFT = 0;
 	final static int RIGHT = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 	final static int TOP = 0;
 	final static int BOTTOM = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 	
-	int x[] = {100, 120, 150, 170, 190, 150, 120};
-	int y[] = {50, 75, 50, 20, 10, 25, 35};
-	Polygon rock = new Polygon(x,y,x.length);
+	int[] position = {50,50};
+	Polygon rock;
+	int x[] = {0, 30, 60, 75, 90, 65, 40, 20};
+	int y[] = {50, 0, 0, 40, 50, 90, 70, 80};
 	
-	int[] position = {145, 30};
-	
-	public Rock(){
-		setBounds(x[0], y[1], 50, 50);
+	public Rock(int x, int y){
+		position[0] = x;
+		position[1] = y;
+		this.x = new int[] {x-50, x-20, x+10, x+25, x+40, x+15, x-10, x-30};
+		this.y = new int[] {y, y-50, y-50, y-10, y, y+40, y+20, y+30};
+		rock = new Polygon(this.x, this.y, this.x.length);
 	}
+
 	
-	
-	public void paintComponent(Graphics g){
-        super.paintComponent(g);
-        g.setColor(Color.GREEN);
-        g.fillPolygon(rock);
-		setBounds(x[0], y[1], 50, 50);
-	}
-	
-	/*
 	public int[] updatePosition(int deltaX, int deltaY){
-		if(validUpdate(deltaX, deltaY)){
-			
-			x[0] = x[0]+deltaX;
-			x[1] = x[1]+deltaX;
-			x[2] = x[2]+deltaX;
-			
-			y[0] = y[0]+deltaY;
-			y[1] = y[1]+deltaY;
-			y[2] = y[2]+deltaY;
-			
-			int[] position = {x[1], y[1]/2};
-			return position;
+		for(int i = 0; i<this.x.length; i++){
+			this.x[i] += deltaX;
+			this.y[i] += deltaY;
 		}
+		
+		position[0] = x[4]-40;
+		position[1] = y[0];
+		rock = new Polygon(x, y, x.length);
 		return position;
 	}
 	
-	private boolean validUpdate(int deltaX, int deltaY){
-		if((deltaX+x[0] > LEFT) && (deltaX+x[2] < RIGHT)){
-			if((deltaY+y[0] > TOP) && (deltaY+y[2] < BOTTOM)){
-				return true; //It's all good
-			}
-		}
-		return false; //it's not okay
+	public Polygon getImage(){
+		return rock;
 	}
-	*/
+	
+	public int[] getRock(){
+		return position;
+	}
+	
+	public Rectangle getBox(){
+		return new Rectangle(x[0],y[1], 90, 90);
+	}
 }

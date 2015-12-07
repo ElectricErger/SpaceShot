@@ -1,5 +1,7 @@
 package spaceShot;
 
+import java.awt.Rectangle;
+
 public class Bullet {
 	int[] position = {0,0};
 	Bullet(int x, int y){
@@ -14,5 +16,9 @@ public class Bullet {
 	
 	public int[] getBullet(){
 		return position;
+	}
+	
+	public Rectangle getBox(){
+		return new Rectangle(position[0], position[1], 5, 15);
 	}
 }

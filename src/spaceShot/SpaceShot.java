@@ -56,6 +56,7 @@ public class SpaceShot {
 		window.getRootPane().getActionMap().put("EXIT", new AbstractAction(){ 
 			        public void actionPerformed(ActionEvent e){
 			            window.dispose();
+			            System.exit(0);
 			        }
 			    }
 		);

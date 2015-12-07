@@ -16,13 +16,14 @@ public class SpaceShip{ //In the future extend from Sprite
 	Color c;
 	Polygon ship;
 	
-	
+	//We keep the position, and the polygon
 	public SpaceShip(int x, int y, Color c){
 		position[0] = x;
 		position[1] = y; 
 		this.x = new int[] {position[0]-25,position[0],position[0]+25};
 		this.y = new int[] {position[1]+25,position[1]-25,position[1]+25};
 		this.c = c;
+		ship = new Polygon(this.x,this.y,this.x.length);
 		//super (x,y); //Passes the arguments to sprite. Now we have met our extend requirements and have a proper sprite
 	}
 	
@@ -31,7 +32,7 @@ public class SpaceShip{ //In the future extend from Sprite
 	}
 	
 	public Polygon getImage(){
-		return new Polygon(x,y,x.length);
+		return ship;
 	}
 	public int getX(){
 		return position[0];
@@ -51,8 +52,9 @@ public class SpaceShip{ //In the future extend from Sprite
 			y[1] = y[1]+deltaY;
 			y[2] = y[2]+deltaY;
 			
-			int[] position = {x[1], y[1]/2};
-		//	setBounds(x[0], y[1], 50, 50);
+			position[0] = x[1];
+			position[1] = y[1];
+
 			ship = new Polygon(x,y,x.length); // recreates the polygon in a new space
 			return position;
 		}

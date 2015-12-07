@@ -55,6 +55,10 @@ public class Space extends JPanel implements ActionListener{
 		rocks(g);
 		bullets(g);
 		
+		String scoreStr = "Score: "+score;
+		g.setFont(new Font("MONOSPACED", Font.PLAIN, 40));
+		g.drawString(scoreStr, (RIGHT-g.getFontMetrics().stringWidth(scoreStr)), 40);
+		
 		if (title){
 			g.drawImage(logo.getImage(), (RIGHT-logo.getImage().getWidth(null))/2, (BOTTOM-logo.getImage().getHeight(null))/4, null);
 			//Press enter to start
@@ -63,7 +67,9 @@ public class Space extends JPanel implements ActionListener{
 			g.drawString(s, (RIGHT-g.getFontMetrics().stringWidth(s))/2, (BOTTOM)*3/4);
 		}
 		if(gameOver){
-			g.drawString("GAME OVER", 100, 100);
+			String s = "GAME OVER";
+			g.setFont(new Font("MONOSPACED", Font.PLAIN, 60));
+			g.drawString(s, (RIGHT-g.getFontMetrics().stringWidth(s))/2, BOTTOM/2);
 		}
 	}
 

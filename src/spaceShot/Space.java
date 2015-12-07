@@ -9,7 +9,9 @@ import java.awt.Polygon;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -35,15 +37,25 @@ public class Space extends JPanel implements ActionListener{
 	boolean title = true;
 	boolean gameOver = false;
 	int score = 0;
+	boolean fire = false;
 	
 	Space(){
 		ship = new SpaceShip(RIGHT/2, BOTTOM-50, Color.CYAN);
 		logo = new Logo(100, 100);
 		setBackground(Color.BLACK);
-		listeners();
+		//listeners();
 		generateStars();
 		time.start();
 		(new astr()).start();
+		//Start listener...I still need this?
+		addKeyListener(new listen());
+		this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Start");
+		this.getActionMap().put("Start",  new AbstractAction(){
+			public void actionPerformed(ActionEvent e){
+				title = false;
+				}
+			}
+		);
 	}
 	
 	//PAINTING PROTOCOL
@@ -100,6 +112,7 @@ public class Space extends JPanel implements ActionListener{
 			g.fillRect(loc[0], loc[1], 5, 15);
 		}
 	}
+	
 	private void rocks(Graphics g){
 		g.setColor(Color.GRAY);
 		for(Rock r : rocks){
@@ -107,7 +120,7 @@ public class Space extends JPanel implements ActionListener{
 		}
 	}
 	
-	
+
 	//Temporary controller
 	private void listeners(){
 		this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "Move Up");
@@ -148,7 +161,6 @@ public class Space extends JPanel implements ActionListener{
 		this.getActionMap().put("Fire", new AbstractAction(){
 			public void actionPerformed(ActionEvent e){
 				bullets.add(new Bullet(ship.getX(), ship.getY()));
-				ship.getY();
 				repaint();
 			}
 		}
@@ -160,11 +172,12 @@ public class Space extends JPanel implements ActionListener{
 		});
 		
 	}
-	
+
 
 	
 	//Updater
 	public void actionPerformed(ActionEvent e){
+		shipUpdater();
 		bulletUpdater();
 		asteroidUpdater();
 		starUpdater();
@@ -172,7 +185,13 @@ public class Space extends JPanel implements ActionListener{
 		repaint();
 	}
 	
+	private void shipUpdater(){
+		ship.updatePosition();
+	}
 	private void bulletUpdater(){
+		if(fire){
+			bullets.add(new Bullet(ship.getX(), ship.getY()));
+		}
 		for(int i = 0; i<bullets.size(); i++){
 			Bullet bullet = (Bullet) bullets.get(i);
 			bullet.updatePosition(0, -15);
@@ -232,6 +251,52 @@ public class Space extends JPanel implements ActionListener{
 				}
 				try {Thread.sleep(ran.nextInt(10)*100);}
 				catch (InterruptedException e) {}
+			}
+		}
+	}
+	//A class needed to call keys
+	class listen extends KeyAdapter{
+		//This method is called whenever I press a key
+		public void keyPressed(KeyEvent e){
+			System.out.println("KEY IN");
+			int input = e.getKeyCode();
+			switch(input){
+				case KeyEvent.VK_RIGHT:
+					ship.moveX(1);
+					break;
+				case KeyEvent.VK_DOWN:
+					ship.moveY(1);
+					break;
+				case KeyEvent.VK_LEFT:
+					ship.moveX(-1);
+					break;
+				case KeyEvent.VK_UP:
+					ship.moveY(-1);
+					break;
+				case KeyEvent.VK_SPACE:
+					fire = true;
+					break;
+			}
+		}
+		//The Updater calls this method. The result is a function of what keys were pressed recently
+		public void keyReleased(KeyEvent e){
+			int input = e.getKeyCode();
+			switch(input){
+				case KeyEvent.VK_RIGHT:
+					ship.moveX(0);
+					break;
+				case KeyEvent.VK_DOWN:
+					ship.moveY(0);
+					break;
+				case KeyEvent.VK_LEFT:
+					ship.moveX(0);
+					break;
+				case KeyEvent.VK_UP:
+					ship.moveY(0);
+					break;
+				case KeyEvent.VK_SPACE:
+					fire = false;
+					break;
 			}
 		}
 	}

@@ -17,7 +17,7 @@ public class SpaceShot {
 		window.getContentPane().setBackground(Color.BLACK);
 		window.setExtendedState(JFrame.MAXIMIZED_BOTH); //Full dimensions
 		window.setUndecorated(true); //True full screen
-
+		
 		window.add(new Space());
 		
 		//Bind Keys

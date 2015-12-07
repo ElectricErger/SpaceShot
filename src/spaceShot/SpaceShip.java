@@ -2,6 +2,7 @@
 package spaceShot;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
 import javax.swing.*;
 
@@ -16,6 +17,8 @@ public class SpaceShip{ //In the future extend from Sprite
 	int y[];
 	Color c;
 	Polygon ship;
+	int dx = 0;
+	int dy = 0;
 	
 	//We keep the position, and the polygon
 	public SpaceShip(int x, int y, Color c){
@@ -42,6 +45,14 @@ public class SpaceShip{ //In the future extend from Sprite
 		return position[1];
 	}
 	
+	public void moveX(int x){
+		dx = x;
+	}
+	public void moveY(int y){
+		dy = y;
+	}
+	
+
 	public int[] updatePosition(int deltaX, int deltaY){
 		if(validUpdate(deltaX, deltaY)){
 			
@@ -61,6 +72,24 @@ public class SpaceShip{ //In the future extend from Sprite
 		}
 		return position;
 	}
+
+	public void updatePosition(){
+		if(validUpdate(dx, dy)){
+			
+			x[0] += dx;
+			x[1] += dx;
+			x[2] += dx;
+			
+			y[0] += dy;
+			y[1] += dy;
+			y[2] += dy;
+			
+			position[0] = x[1];
+			position[1] = y[1]+25;
+
+			ship = new Polygon(x,y,x.length); // recreates the polygon in a new space
+		}
+	}
 	
 	private boolean validUpdate(int deltaX, int deltaY){
 		if((deltaX+x[0] > LEFT) && (deltaX+x[2] < RIGHT)){
@@ -70,7 +99,7 @@ public class SpaceShip{ //In the future extend from Sprite
 		}
 		return false; //it's not okay
 	}
-	
+
 
 	public Rectangle getBox(){
 		return new Rectangle(position[0]-25, position[1]-25, 50, 50);

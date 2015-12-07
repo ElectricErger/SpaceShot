@@ -44,6 +44,7 @@ public class SpaceShot {
 		//Display the logo
 	//	Logo logo = new Logo();
 		//window.add(logo);
+		
 		window.add(new Space());
 		
 		//Bind Keys

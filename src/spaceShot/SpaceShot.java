@@ -39,7 +39,7 @@ public class SpaceShot {
 		AudioInputStream audioIn = AudioSystem.getAudioInputStream(SpaceShot.class.getResource("SpacePirates.wav"));
 		Clip clip = AudioSystem.getClip();
 		clip.open(audioIn);
-		clip.start();
+		clip.loop(2);
 		
 		//Blit and blast baby
 		window.pack();

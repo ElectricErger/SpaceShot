@@ -35,8 +35,6 @@ public class Controller implements ActionListener {
 	ArrayList<Star> stars = new ArrayList();
 	ArrayList<Rock> rocks = new ArrayList();
 	Timer time = new Timer(50, this); //Requires implementing actionListener ...not sure why. Read up on it
-	//Timer ast = new Timer(100, this);
-	int score = 0;
 	boolean fire = false;
 	
 	
@@ -119,7 +117,8 @@ public class Controller implements ActionListener {
 	private synchronized void asteroidUpdater(){
 		for(int i = 0; i<rocks.size(); i++){
 			Rock rock = rocks.get(i);
-			rock.updatePosition(0, rockSpeed);
+			rock.updatePosition();
+			//rock.updatePosition(0, rockSpeed);
 			
 			if(rock.getRock()[1]>BOTTOM){
 				rocks.remove(i);

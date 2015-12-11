@@ -40,15 +40,15 @@ public class Space extends JPanel implements ActionListener{
 	boolean fire = false;
 	
 	Space(){
+		this.setFocusable(true);
 		ship = new SpaceShip(RIGHT/2, BOTTOM-50, Color.CYAN);
 		logo = new Logo(100, 100);
 		setBackground(Color.BLACK);
-		//listeners();
 		generateStars();
-		time.start();
-		(new astr()).start();
+		
 		//Start listener...I still need this?
-		addKeyListener(new listen());
+		this.addKeyListener(new Listen());
+		
 		this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Start");
 		this.getActionMap().put("Start",  new AbstractAction(){
 			public void actionPerformed(ActionEvent e){
@@ -56,6 +56,8 @@ public class Space extends JPanel implements ActionListener{
 				}
 			}
 		);
+		time.start();
+		(new astr()).start();
 	}
 	
 	//PAINTING PROTOCOL
@@ -112,7 +114,6 @@ public class Space extends JPanel implements ActionListener{
 			g.fillRect(loc[0], loc[1], 5, 15);
 		}
 	}
-	
 	private void rocks(Graphics g){
 		g.setColor(Color.GRAY);
 		for(Rock r : rocks){
@@ -120,7 +121,7 @@ public class Space extends JPanel implements ActionListener{
 		}
 	}
 	
-
+/*
 	//Temporary controller
 	private void listeners(){
 		this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "Move Up");
@@ -128,52 +129,49 @@ public class Space extends JPanel implements ActionListener{
 		this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "Move Left");
 		this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "Move Right");
 		this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "Fire");
-		this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Start");
 		
 		this.getActionMap().put("Move Up", new AbstractAction(){
 			public void actionPerformed(ActionEvent e){
-				ship.updatePosition(0, -sensitive);
-				repaint();
+				//ship.updatePosition(0, -sensitive);
+				//repaint();
+				ship.moveY(-sensitive);
 			}
 		}
 		);		
 		this.getActionMap().put("Move Down", new AbstractAction(){
 			public void actionPerformed(ActionEvent e){
-				ship.updatePosition(0, sensitive);
-				repaint();
+				//ship.updatePosition(0, sensitive);
+				//repaint();
+				ship.moveY(sensitive);
 			}
 		}
 		);		
 		this.getActionMap().put("Move Left", new AbstractAction(){
 			public void actionPerformed(ActionEvent e){
-				ship.updatePosition(-sensitive, 0);
-				repaint();
+				//ship.updatePosition(-sensitive, 0);
+				//repaint();
+				ship.moveX(-sensitive);
 			}
 		}
 		);		
 		this.getActionMap().put("Move Right", new AbstractAction(){
 			public void actionPerformed(ActionEvent e){
-				ship.updatePosition(sensitive, 0);
-				repaint();
+				//ship.updatePosition(sensitive, 0);
+				//repaint();
+				ship.moveX(sensitive);
 			}
 		}
 		);
 		this.getActionMap().put("Fire", new AbstractAction(){
 			public void actionPerformed(ActionEvent e){
-				bullets.add(new Bullet(ship.getX(), ship.getY()));
-				repaint();
+				//bullets.add(new Bullet(ship.getX(), ship.getY()));
+				//repaint();
+				fire = true;
 			}
 		}
-		);
-		this.getActionMap().put("Start",  new AbstractAction(){
-			public void actionPerformed(ActionEvent e){
-				title = false;
-			}
-		});
-		
+		);		
 	}
-
-
+*/
 	
 	//Updater
 	public void actionPerformed(ActionEvent e){
@@ -211,7 +209,7 @@ public class Space extends JPanel implements ActionListener{
 			}
 		}
 	}
-	private void asteroidUpdater(){
+	private synchronized void asteroidUpdater(){
 		for(int i = 0; i<rocks.size(); i++){
 			Rock rock = rocks.get(i);
 			rock.updatePosition(0, 10);
@@ -221,15 +219,17 @@ public class Space extends JPanel implements ActionListener{
 			}
 		}
 	}
-	private void collisions(){
+	private synchronized void collisions(){
 		//Collisions between asteroids and bullets
 		for(int r = 0; r<rocks.size(); r++){
 			Rock rockCol = rocks.get(r);
 			for(int b = 0; b<bullets.size(); b++){ //We did it
 				if(rockCol.getBox().intersects(bullets.get(b).getBox())){
+					System.out.println("Destroyed, rock size: "+ rocks.size());
 					rocks.remove(r);
 					bullets.remove(b);
 					score++;
+					break; //If I don't break then we could get a rock number that is out of bounds of the array list
 				}
 			}
 			if(rockCol.getBox().intersects(ship.getBox())){ //You lose
@@ -244,7 +244,7 @@ public class Space extends JPanel implements ActionListener{
 	
 	//New thread for making astroids
 	class astr extends Thread{
-		public void run(){
+		public synchronized void run(){
 			while (true){
 				if(rocks.size()<10 && !title && !gameOver){
 					rocks.add(new Rock(ran.nextInt(RIGHT), -20));
@@ -255,23 +255,24 @@ public class Space extends JPanel implements ActionListener{
 		}
 	}
 	//A class needed to call keys
-	class listen extends KeyAdapter{
+	private class Listen extends KeyAdapter{
 		//This method is called whenever I press a key
+		@Override
 		public void keyPressed(KeyEvent e){
 			System.out.println("KEY IN");
 			int input = e.getKeyCode();
 			switch(input){
 				case KeyEvent.VK_RIGHT:
-					ship.moveX(1);
+					ship.moveX(sensitive);
 					break;
 				case KeyEvent.VK_DOWN:
-					ship.moveY(1);
+					ship.moveY(sensitive);
 					break;
 				case KeyEvent.VK_LEFT:
-					ship.moveX(-1);
+					ship.moveX(-sensitive);
 					break;
 				case KeyEvent.VK_UP:
-					ship.moveY(-1);
+					ship.moveY(-sensitive);
 					break;
 				case KeyEvent.VK_SPACE:
 					fire = true;
@@ -279,6 +280,7 @@ public class Space extends JPanel implements ActionListener{
 			}
 		}
 		//The Updater calls this method. The result is a function of what keys were pressed recently
+		@Override
 		public void keyReleased(KeyEvent e){
 			int input = e.getKeyCode();
 			switch(input){

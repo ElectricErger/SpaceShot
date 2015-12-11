@@ -1,20 +1,19 @@
 //Controller
 package spaceShot;
 
-import java.awt.*;
+import java.applet.*;
+import java.awt.Color;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 
-import javax.imageio.ImageIO;
-
 import javafx.scene.media.*;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 
 public class SpaceShot {
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException{
 		//Setup window
 		JFrame window = new JFrame("SpaceShot");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,13 +36,10 @@ public class SpaceShot {
 		);
 		
 		//Music
-		//WARNING DOESN'T WORK ON ALL MACHINES
-		String songFile = "file://C:/Users/Maximillian/Documents/Programming/SpaceShot/src/spaceShot/SpacePirates.mp3";
-		//+System.getProperty("user.dir")+"\\src\\spaceShot\\SpacePirates.mp3";
-		System.out.println(songFile);
-		Media hit = new Media(songFile);
-		MediaPlayer mediaPlayer = new MediaPlayer(hit);
-		mediaPlayer.play();
+		AudioInputStream audioIn = AudioSystem.getAudioInputStream(SpaceShot.class.getResource("SpacePirates.wav"));
+		Clip clip = AudioSystem.getClip();
+		clip.open(audioIn);
+		clip.start();
 		
 		//Blit and blast baby
 		window.pack();

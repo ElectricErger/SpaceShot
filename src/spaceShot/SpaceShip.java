@@ -34,7 +34,6 @@ public class SpaceShip{ //In the future extend from Sprite
 	public Color getColor(){
 		return c;
 	}
-	
 	public Polygon getImage(){
 		return ship;
 	}
@@ -44,38 +43,25 @@ public class SpaceShip{ //In the future extend from Sprite
 	public int getY(){
 		return position[1];
 	}
+	public int getXVelocity(){
+		return dx;
+	}
+	public int getYVelocity(){
+		return dy;
+	}
 	
 	public void moveX(int x){
-		dx = x;
+		dx += x;
 	}
 	public void moveY(int y){
-		dy = y;
+		dy += y;
 	}
 	
 
-	public int[] updatePosition(int deltaX, int deltaY){
-		if(validUpdate(deltaX, deltaY)){
-			
-			x[0] = x[0]+deltaX;
-			x[1] = x[1]+deltaX;
-			x[2] = x[2]+deltaX;
-			
-			y[0] = y[0]+deltaY;
-			y[1] = y[1]+deltaY;
-			y[2] = y[2]+deltaY;
-			
-			position[0] = x[1];
-			position[1] = y[1];
-
-			ship = new Polygon(x,y,x.length); // recreates the polygon in a new space
-			return position;
-		}
-		return position;
-	}
 
 	public void updatePosition(){
+		//System.out.println("Current position: "+ position[0] + " of " + RIGHT);
 		if(validUpdate(dx, dy)){
-			
 			x[0] += dx;
 			x[1] += dx;
 			x[2] += dx;
@@ -87,16 +73,19 @@ public class SpaceShip{ //In the future extend from Sprite
 			position[0] = x[1];
 			position[1] = y[1]+25;
 
+			//System.out.println("Update: " + (double)position[0]/(double)RIGHT);
 			ship = new Polygon(x,y,x.length); // recreates the polygon in a new space
 		}
 	}
 	
 	private boolean validUpdate(int deltaX, int deltaY){
+		//System.out.print("Position: ("+position[0]+","+position[1]+")");
 		if((deltaX+x[0] > LEFT) && (deltaX+x[2] < RIGHT)){
 			if((deltaY+y[0] > TOP) && (deltaY+y[2] < BOTTOM)){
 				return true; //It's all good
 			}
 		}
+	//	System.out.println();
 		return false; //it's not okay
 	}
 

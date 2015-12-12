@@ -8,9 +8,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
@@ -36,11 +39,13 @@ public class Controller implements ActionListener {
 	ArrayList<Rock> rocks = new ArrayList();
 	Timer time = new Timer(50, this); //Requires implementing actionListener ...not sure why. Read up on it
 	boolean fire = false;
+	Audio sound;
 	
 	
 	Controller(Space field){
 		this.field = field;
 		field.setFocusable(true);
+		sound = new Audio(); //Music and sound effects
 		
 		currentGame = new GameState();
 		field.gameLoader(currentGame);
@@ -78,6 +83,11 @@ public class Controller implements ActionListener {
 	}
 	
 
+	//NEXT MOVES:
+	//Explotion.gif
+	//Lazar sounds
+	
+	
 	//Updater
 	public void actionPerformed(ActionEvent e){
 		shipUpdater();
@@ -94,6 +104,7 @@ public class Controller implements ActionListener {
 	private void bulletUpdater(){
 		if(fire){
 			bullets.add(new Bullet(ship.getX(), ship.getY()));
+			sound.laserSound();
 		}
 		for(int i = 0; i<bullets.size(); i++){
 			Bullet bullet = (Bullet) bullets.get(i);
@@ -131,6 +142,7 @@ public class Controller implements ActionListener {
 			Rock rockCol = rocks.get(r);
 			for(int b = 0; b<bullets.size(); b++){ //We did it
 				if(rockCol.getBox().intersects(bullets.get(b).getBox())){
+					sound.explotionSound();
 					rocks.remove(r);
 					bullets.remove(b);
 					currentGame.changeScore(1);

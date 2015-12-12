@@ -21,6 +21,6 @@ public class Logo extends Sprite{
 	Image logoBuff = null;
 	Logo(int x, int y){
 		super(x,y);
-		setImage("src/spaceShot/logo2.png");
+		setImage("src/spaceShot/logo3.png");
 	}
 }

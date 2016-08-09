@@ -84,8 +84,7 @@ public class Controller implements ActionListener {
 	
 
 	//NEXT MOVES:
-	//Explotion.gif
-	//Lazar sounds
+	//Explotion.gif=
 	
 	
 	//Updater

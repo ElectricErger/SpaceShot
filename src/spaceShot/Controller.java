@@ -19,10 +19,12 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.Timer;
 
+import screenObjects.SpaceShip;
+
 
 public class Controller implements ActionListener {
-	final static int RIGHT = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-	final static int BOTTOM = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+	int RIGHT = Space.RIGHT;
+	int BOTTOM = Space.BOTTOM;
 	
 	int shipSpeed = 30; //Make an option for this later
 	int rockSpeed = 10;
@@ -30,25 +32,18 @@ public class Controller implements ActionListener {
 	
 	Space field;
 	SpaceShip ship;
-	Logo logo;
-	GameState currentGame;
 	
 	Random ran = new Random();
-	ArrayList<Bullet> bullets = new ArrayList();
-	ArrayList<Star> stars = new ArrayList();
-	ArrayList<Rock> rocks = new ArrayList();
 	Timer time = new Timer(50, this); //Requires implementing actionListener ...not sure why. Read up on it
 	boolean fire = false;
 	Audio sound;
 	
 	
-	Controller(Space field){
+	Controller(Space field){ //
 		this.field = field;
 		field.setFocusable(true);
 		sound = new Audio(); //Music and sound effects
 		
-		currentGame = new GameState();
-		field.gameLoader(currentGame);
 		protocol();
 	}
 

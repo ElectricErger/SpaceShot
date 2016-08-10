@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry including="spaceShot/|spaceShot/Audio.java|spaceShot/Bullet.java|spaceShot/Client.java|spaceShot/Controller.java|spaceShot/GameState.java|spaceShot/Logo.java|spaceShot/Rock.java|spaceShot/Space.java|spaceShot/SpacePirates.mp3|spaceShot/SpacePirates.wav|spaceShot/SpaceShip.java|spaceShot/SpaceShot.java|spaceShot/Sprite.java|spaceShot/Star.java|spaceShot/laser.wav|spaceShot/logo.png|spaceShot/logo2.png|spaceShot/logo3.png" kind="src" path="src"/>
+	<classpathentry including="screenObjects/|spaceShot/|state/" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<accessrules>
 			<accessrule kind="accessible" pattern="javafx/**"/>

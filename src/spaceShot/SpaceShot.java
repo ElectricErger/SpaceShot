@@ -3,6 +3,7 @@ package spaceShot;
 
 import java.awt.Color;
 import java.awt.event.*;
+
 import javax.swing.*;
 
 public class SpaceShot {
@@ -16,6 +17,7 @@ public class SpaceShot {
 		
 		Space field = new Space();
 		Controller controller = new Controller(field);
+		//Make audio object here
 		window.add(field);
 		
 		//Bind Keys

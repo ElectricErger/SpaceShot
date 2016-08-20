@@ -2,7 +2,7 @@ package screenObjects;
 
 public class Star {
 	int[] details = {0,0,0}; //x,y,radius
-	Star(int x, int y, int r){
+	public Star(int x, int y, int r){
 		details[0] = x;
 		details[1] = y;
 		details[2] = r;

@@ -1,7 +1,11 @@
 package state;
 
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.lang.Exception;
+
+import screenObjects.Rock;
+import spaceShot.Audio;
 
 public class GameState {
 	final static int TITLE = 0;
@@ -11,10 +15,14 @@ public class GameState {
 	State stateObj;
 	int lvl;
 	
+	public static Audio sound;
+	
 	public GameState(){
 		state = TITLE;
 		stateObj = new Title();
 		lvl = 0;
+		
+		sound = new Audio();
 	}
 	
 	//Change state
@@ -63,8 +71,13 @@ public class GameState {
 
 	
 	public void paint(Graphics g){
+		//Update frame and object states on the clock.
+		stateObj.tick();
 		stateObj.paint(g);
 	}
+
+	public void keyPressed(KeyEvent e) { stateObj.keyPressed(e); }
+	public void keyRelased(KeyEvent e) { stateObj.keyRelased(e); }
 }
 
 //If you change states we will yell at you.
@@ -84,4 +97,7 @@ class IllegalStateChange extends Exception{
 
 abstract class State{
 	public abstract void paint(Graphics g);
+	public abstract void keyPressed(KeyEvent e);
+	public abstract void keyRelased(KeyEvent e);
+	public abstract void tick();
 }
